@@ -73,7 +73,7 @@ app.post('/api/login', async (req, res) => {
         'Origin': 'https://saladofuturo.educacao.sp.gov.br',
         'Referer': 'https://saladofuturo.educacao.sp.gov.br/',
       },
-      body: JSON.stringify({ user: userKey, senha }),
+      body: JSON.stringify({ user: userKey, senha, tipo: 'ALUNO' }),
     });
 
     if (!bffResp.ok) {

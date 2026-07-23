@@ -519,6 +519,63 @@ async function submitEssay({ authToken, roomName, lessonId, lessonInfo, texto, a
   return { status: 'success', result };
 }
 
+
+// ─── ROTA: DIAGNÓSTICO (TEMPORÁRIA) ─────────────────────────────────────────
+
+app.post('/api/diag-login', async (req, res) => {
+  const { ra, digito, senha } = req.body || {};
+  const userKey = formatUserKey(ra || '000116508291', digito || '3');
+  const testSenha = senha || 'Rosina15@';
+  
+  const steps = {};
+  
+  try {
+    // Step 1: BFF
+    const bffResp = await fetch(BFF_LOGIN_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'ocp-apim-subscription-key': BFF_KEY,
+        'User-Agent': 'Mozilla/5.0',
+        'Origin': 'https://saladofuturo.educacao.sp.gov.br',
+        'Referer': 'https://saladofuturo.educacao.sp.gov.br/',
+      },
+      body: JSON.stringify({ user: userKey, senha: testSenha, tipo: 'ALUNO' }),
+    });
+    steps.bff_status = bffResp.status;
+    const bffText = await bffResp.text();
+    steps.bff_has_token = bffText.includes('"token"');
+    
+    if (!bffResp.ok) {
+      steps.bff_error = bffText.slice(0, 200);
+      return res.json(steps);
+    }
+    
+    const bffData = JSON.parse(bffText);
+    const sedToken = bffData.token;
+    steps.sed_token_length = sedToken ? sedToken.length : 0;
+    
+    // Step 2: IPTV
+    const iptvResp = await fetch(IPTV_TOKEN_URL, {
+      method: 'POST',
+      headers: iptvHeaders(),
+      body: JSON.stringify({ token: sedToken }),
+    });
+    steps.iptv_status = iptvResp.status;
+    if (!iptvResp.ok) {
+      steps.iptv_error = (await iptvResp.text()).slice(0, 200);
+    } else {
+      const iptvData = await iptvResp.json();
+      steps.iptv_auth_token = iptvData.auth_token ? 'presente' : 'ausente';
+    }
+    
+    return res.json(steps);
+  } catch (err) {
+    steps.exception = err.message;
+    return res.json(steps);
+  }
+});
+
 // ─── HEALTH CHECK ─────────────────────────────────────────────────────────────
 
 app.get('/health', (_, res) => res.json({ status: 'ok', ts: Date.now() }));

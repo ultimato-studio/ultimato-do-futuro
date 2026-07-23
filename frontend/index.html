@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ultimato do Futuro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0d0d;
+      --surface: #161616;
+      --surface2: #1e1e1e;
+      --border: #2a2a2a;
+      --accent: #7c3aed;
+      --accent-hover: #6d28d9;
+      --accent2: #a855f7;
+      --green: #22c55e;
+      --red: #ef4444;
+      --yellow: #f59e0b;
+      --text: #f0f0f0;
+      --text2: #9a9a9a;
+      --text3: #666;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── Layout ── */
+    .app { width: 100%; max-width: 540px; padding: 24px 16px 80px; }
+
+    /* ── Header ── */
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+      padding-top: 16px;
+    }
+    .logo {
+      font-size: 28px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #a855f7, #7c3aed);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.5px;
+    }
+    .logo span { -webkit-text-fill-color: var(--text); font-weight: 400; font-size: 20px; }
+    .tagline { color: var(--text3); font-size: 13px; margin-top: 4px; }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text2);
+      margin-bottom: 14px;
+    }
+
+    /* ── Form ── */
+    .form-row { margin-bottom: 12px; }
+    label { display: block; font-size: 13px; color: var(--text2); margin-bottom: 6px; font-weight: 500; }
+    input, select {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 15px;
+      padding: 11px 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus, select:focus { border-color: var(--accent); }
+    input::placeholder { color: var(--text3); }
+    .row2 { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
+    .row2 input:last-child { max-width: 72px; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; padding: 13px; border-radius: var(--radius-sm);
+      font-family: inherit; font-size: 15px; font-weight: 600;
+      border: none; cursor: pointer; transition: all 0.15s;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover:not(:disabled) { background: var(--accent-hover); }
+    .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover:not(:disabled) { border-color: var(--accent); color: var(--accent2); }
+    .btn-danger { background: #2a0a0a; color: var(--red); border: 1px solid #3a1a1a; }
+    .btn-danger:hover:not(:disabled) { background: #3a1212; }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-sm { padding: 8px 14px; font-size: 13px; width: auto; }
+
+    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .btn-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+
+    /* ── Badge / Tag ── */
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 8px; border-radius: 99px; font-size: 11px; font-weight: 600;
+    }
+    .badge-green { background: #052010; color: var(--green); }
+    .badge-red { background: #200505; color: var(--red); }
+    .badge-yellow { background: #201200; color: var(--yellow); }
+    .badge-purple { background: #160b2a; color: var(--accent2); }
+    .badge-gray { background: var(--surface2); color: var(--text3); }
+
+    /* ── Aluno Info ── */
+    .aluno-card {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px;
+    }
+    .aluno-info .name { font-weight: 700; font-size: 16px; }
+    .aluno-info .sub { color: var(--text2); font-size: 13px; margin-top: 2px; }
+    .logout-btn {
+      background: none; border: 1px solid var(--border); border-radius: var(--radius-sm);
+      color: var(--text3); font-size: 12px; padding: 6px 10px; cursor: pointer;
+      transition: all 0.15s; font-family: inherit;
+    }
+    .logout-btn:hover { border-color: var(--red); color: var(--red); }
+
+    /* ── Progress ── */
+    .progress-bar-wrap {
+      background: var(--surface2); border-radius: 99px; height: 6px; margin: 10px 0 6px;
+    }
+    .progress-bar {
+      height: 6px; border-radius: 99px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transition: width 0.4s ease;
+    }
+    .progress-text { color: var(--text2); font-size: 12px; display: flex; justify-content: space-between; }
+    .progress-task { color: var(--text); font-size: 13px; margin: 6px 0 2px; font-weight: 500; }
+
+    /* ── Task list ── */
+    .task-list { display: flex; flex-direction: column; gap: 8px; }
+    .task-item {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 12px 14px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .task-item.done { border-color: #1a3a1a; }
+    .task-item.failed { border-color: #3a1a1a; }
+    .task-item.skipped { opacity: 0.5; }
+    .task-item-left { flex: 1; min-width: 0; }
+    .task-title {
+      font-size: 14px; font-weight: 500;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .task-meta { font-size: 12px; color: var(--text3); margin-top: 2px; }
+    .task-score {
+      font-size: 18px; font-weight: 700; color: var(--green); white-space: nowrap;
+    }
+    .task-score.low { color: var(--yellow); }
+    .task-score.fail { color: var(--red); }
+
+    /* ── Histórico ── */
+    .hist-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+      gap: 10px;
+    }
+    .hist-item:last-child { border-bottom: none; }
+    .hist-title { font-size: 13px; font-weight: 500; }
+    .hist-meta { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+    /* ── Tabs ── */
+    .tabs {
+      display: flex; gap: 0; margin-bottom: 16px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 4px; 
+    }
+    .tab {
+      flex: 1; padding: 9px 12px; border-radius: 6px;
+      font-family: inherit; font-size: 13px; font-weight: 500;
+      border: none; cursor: pointer; transition: all 0.15s;
+      background: none; color: var(--text3);
+    }
+    .tab.active { background: var(--accent); color: #fff; }
+
+    /* ── Estatísticas ── */
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .stat-box {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 12px; text-align: center;
+    }
+    .stat-num { font-size: 24px; font-weight: 700; }
+    .stat-label { font-size: 11px; color: var(--text3); margin-top: 2px; }
+    .stat-green { color: var(--green); }
+    .stat-red { color: var(--red); }
+    .stat-purple { color: var(--accent2); }
+
+    /* ── Alerts ── */
+    .alert {
+      padding: 12px 14px; border-radius: var(--radius-sm);
+      font-size: 13px; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px;
+    }
+    .alert-error { background: #1a0505; border: 1px solid #3a1010; color: #ff7f7f; }
+    .alert-success { background: #051a08; border: 1px solid #1a4a1a; color: #7fff9f; }
+    .alert-info { background: #0a0818; border: 1px solid #2a1a4a; color: #b07fff; }
+
+    /* ── Seções ── */
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center; color: var(--text3); font-size: 12px;
+      padding: 20px 0; margin-top: 8px;
+    }
+    footer a { color: var(--accent2); text-decoration: none; }
+
+    /* ── Spinner ── */
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,0.2);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Divider ── */
+    .divider { height: 1px; background: var(--border); margin: 14px 0; }
+
+    /* ── Chips de modo ── */
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .chip {
+      padding: 7px 14px; border-radius: 99px; font-size: 13px; font-weight: 500;
+      border: 1px solid var(--border); background: var(--surface2);
+      color: var(--text2); cursor: pointer; transition: all 0.15s; font-family: inherit;
+    }
+    .chip.active { border-color: var(--accent); background: #1a0d2e; color: var(--accent2); }
+
+    /* ── Redação textarea ── */
+    .essay-preview {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 14px;
+      font-size: 13px; line-height: 1.7; color: var(--text);
+      max-height: 200px; overflow-y: auto; white-space: pre-wrap;
+      margin-top: 10px;
+    }
+
+    /* Responsivo mobile */
+    @media (max-width: 400px) {
+      .btn-grid-3 { grid-template-columns: 1fr 1fr; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <div class="logo">⚡ Ultimato <span>do Futuro</span></div>
+      <div class="tagline">Automação para a Sala do Futuro · Só SP</div>
+    </div>
+
+    <!-- ── SEÇÃO: LOGIN ── -->
+    <div id="sec-login" class="section active">
+      <div class="card">
+        <div class="card-title">🔐 Entrar</div>
+        <div id="login-error"></div>
+        <div class="form-row">
+          <label>RA do Aluno</label>
+          <input id="inp-ra" type="text" inputmode="numeric" placeholder="Ex: 000116508291" maxlength="12" />
+        </div>
+        <div class="form-row row2">
+          <div>
+            <label>Dígito</label>
+            <input id="inp-digito" type="text" inputmode="numeric" placeholder="3" maxlength="1" />
+          </div>
+          <div style="flex:1">
+            <label>Senha</label>
+            <input id="inp-senha" type="password" placeholder="Sua senha" />
+          </div>
+        </div>
+        <div class="form-row" style="margin-top:4px;">
+          <button class="btn btn-primary" id="btn-login">
+            <span>Entrar</span>
+          </button>
+        </div>
+        <p style="font-size:12px;color:var(--text3);text-align:center;margin-top:8px;">
+          Suas credenciais nunca são armazenadas.
+        </p>
+      </div>
+    </div>
+
+    <!-- ── SEÇÃO: TURMA ── -->
+    <div id="sec-turma" class="section">
+      <div class="card">
+        <div class="card-title">🏫 Selecionar Turma</div>
+        <div class="form-row">
+          <label>Turma</label>
+          <select id="sel-turma"></select>
+        </div>
+        <button class="btn btn-primary" id="btn-confirmar-turma">
+          <span>Confirmar</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── SEÇÃO: DASHBOARD ── -->
+    <div id="sec-dash" class="section">
+
+      <!-- Aluno info -->
+      <div class="card">
+        <div class="aluno-card">
+          <div class="aluno-info">
+            <div class="name" id="dash-nome">—</div>
+            <div class="sub" id="dash-turma">—</div>
+          </div>
+          <button class="logout-btn" id="btn-logout">Sair</button>
+        </div>
+      </div>
+
+      <!-- Estatísticas da sessão -->
+      <div class="card" id="stats-card" style="display:none">
+        <div class="card-title">📊 Sessão Atual</div>
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-num stat-green" id="stat-feitas">0</div>
+            <div class="stat-label">Concluídas</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num stat-red" id="stat-falhas">0</div>
+            <div class="stat-label">Falhas</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num stat-purple" id="stat-nota">—</div>
+            <div class="stat-label">Média</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab active" data-tab="automacao">🤖 Automação</button>
+        <button class="tab" data-tab="historico">📋 Histórico</button>
+      </div>
+
+      <!-- Tab: Automação -->
+      <div id="tab-automacao">
+
+        <!-- Tarefas SP -->
+        <div class="card">
+          <div class="card-title">📝 Tarefas SP</div>
+
+          <div class="form-row">
+            <label>Tipo</label>
+            <div class="chips">
+              <button class="chip active" data-tipo="pendentes">⏳ Pendentes</button>
+              <button class="chip" data-tipo="expiradas">🔴 Expiradas</button>
+              <button class="chip" data-tipo="todas">📦 Todas</button>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="btn-grid" style="margin-bottom:8px;">
+            <button class="btn btn-secondary btn-sm" id="btn-buscar">
+              🔍 Buscar Tarefas
+            </button>
+            <button class="btn btn-primary btn-sm" id="btn-fazer-tudo" disabled>
+              ⚡ Fazer Tudo
+            </button>
+          </div>
+
+          <div id="tarefas-result"></div>
+        </div>
+
+        <!-- Redação -->
+        <div class="card">
+          <div class="card-title">✍️ Redação por IA</div>
+          <p style="font-size:13px;color:var(--text2);margin-bottom:12px;">
+            Selecione uma tarefa de redação pendente na lista acima e clique em fazer, ou busque manualmente abaixo.
+          </p>
+          <div class="form-row">
+            <label>ID da Tarefa de Redação <span style="color:var(--text3)">(opcional)</span></label>
+            <input id="inp-redacao-id" type="text" inputmode="numeric" placeholder="Ex: 123456" />
+          </div>
+          <button class="btn btn-secondary" id="btn-redacao">
+            ✍️ Gerar e Enviar Redação
+          </button>
+          <div id="redacao-result"></div>
+        </div>
+
+        <!-- Modo "Fazer Tudo" -->
+        <div class="card" style="border-color: #2a1a4a">
+          <div class="card-title">🔥 Modo Total</div>
+          <p style="font-size:13px;color:var(--text2);margin-bottom:12px;">
+            Faz todas as tarefas pendentes <strong>e</strong> redações de uma vez.
+          </p>
+          <button class="btn btn-primary" id="btn-modo-total">
+            🚀 Iniciar Modo Total
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Tab: Histórico -->
+      <div id="tab-historico" style="display:none">
+        <div class="card">
+          <div class="card-title">📋 Histórico de Atividades</div>
+          <div id="hist-list">
+            <p style="color:var(--text3);font-size:13px;text-align:center;padding:16px 0;">
+              Nenhuma atividade ainda nesta sessão.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- /sec-dash -->
+
+    <!-- ── OVERLAY: PROGRESSO ── -->
+    <div id="overlay-progresso" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:100; display:none; align-items:center; justify-content:center; padding:24px;">
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px; width:100%; max-width:460px;">
+        <div style="font-weight:700; font-size:16px; margin-bottom:4px;">⚙️ Processando...</div>
+        <div class="progress-task" id="prog-task">Preparando...</div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar" id="prog-bar" style="width:0%"></div>
+        </div>
+        <div class="progress-text">
+          <span id="prog-current">0</span>/<span id="prog-total">0</span>
+          <span id="prog-pct">0%</span>
+        </div>
+        <div class="divider"></div>
+        <div id="prog-log" style="max-height:180px; overflow-y:auto; display:flex; flex-direction:column; gap:6px;"></div>
+      </div>
+    </div>
+
+  </div><!-- /app -->
+
+  <footer>
+    Ultimato do Futuro · feito com ❤️ para alunos da Rede Estadual SP
+  </footer>
+
+  <script>
+    // ── Estado global ──────────────────────────────────────────────────────────
+    const state = {
+      authToken: null,
+      turmas: [],
+      turmaAtual: null,
+      aluno: null,
+      tasks: [],
+      tipoSelecionado: 'pendentes',
+      stats: { feitas: 0, falhas: 0, notas: [] },
+      historico: [],
+    };
+
+    // ── Utils ──────────────────────────────────────────────────────────────────
+
+    function show(id) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function showAlert(container, type, msg) {
+      const icons = { error: '❌', success: '✅', info: 'ℹ️' };
+      document.getElementById(container).innerHTML =
+        `<div class="alert alert-${type}">${icons[type]} ${msg}</div>`;
+    }
+
+    function clearAlert(container) {
+      document.getElementById(container).innerHTML = '';
+    }
+
+    function setLoading(btn, loading, text = '') {
+      if (loading) {
+        btn.disabled = true;
+        btn.dataset.orig = btn.innerHTML;
+        btn.innerHTML = `<div class="spinner"></div>${text ? `<span>${text}</span>` : ''}`;
+      } else {
+        btn.disabled = false;
+        btn.innerHTML = btn.dataset.orig || btn.innerHTML;
+      }
+    }
+
+    function scoreClass(score) {
+      if (score == null) return '';
+      if (score >= 70) return '';
+      if (score >= 50) return 'low';
+      return 'fail';
+    }
+
+    async function api(endpoint, body) {
+      const resp = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const data = await resp.json();
+      if (!resp.ok) throw new Error(data.error || 'Erro desconhecido.');
+      return data;
+    }
+
+    function formatDate(iso) {
+      if (!iso) return '';
+      return new Date(iso).toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
+    }
+
+    // ── Progresso overlay ──────────────────────────────────────────────────────
+
+    function showProgress(total) {
+      document.getElementById('overlay-progresso').style.display = 'flex';
+      document.getElementById('prog-total').textContent = total;
+      document.getElementById('prog-current').textContent = '0';
+      document.getElementById('prog-bar').style.width = '0%';
+      document.getElementById('prog-pct').textContent = '0%';
+      document.getElementById('prog-log').innerHTML = '';
+      document.getElementById('prog-task').textContent = 'Iniciando...';
+    }
+
+    function updateProgress(current, total, taskName) {
+      const pct = Math.round((current / total) * 100);
+      document.getElementById('prog-current').textContent = current;
+      document.getElementById('prog-bar').style.width = pct + '%';
+      document.getElementById('prog-pct').textContent = pct + '%';
+      if (taskName) document.getElementById('prog-task').textContent = taskName;
+    }
+
+    function logProgress(msg, type = 'info') {
+      const colors = { ok: 'var(--green)', err: 'var(--red)', skip: 'var(--text3)', info: 'var(--text2)' };
+      const el = document.createElement('div');
+      el.style.cssText = `font-size:12px; color:${colors[type] || colors.info}; display:flex; gap:6px;`;
+      el.innerHTML = `<span>${type === 'ok' ? '✅' : type === 'err' ? '❌' : type === 'skip' ? '⏩' : '·'}</span><span>${msg}</span>`;
+      const log = document.getElementById('prog-log');
+      log.appendChild(el);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function hideProgress() {
+      document.getElementById('overlay-progresso').style.display = 'none';
+    }
+
+    // ── Histórico ──────────────────────────────────────────────────────────────
+
+    function addHistorico(item) {
+      state.historico.unshift({ ...item, timestamp: new Date().toISOString() });
+      if (state.historico.length > 100) state.historico.length = 100;
+      renderHistorico();
+
+      if (state.authToken) {
+        fetch('/api/historico/salvar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ authToken: state.authToken, tarefa: item }),
+        }).catch(() => {});
+      }
+    }
+
+    function renderHistorico() {
+      const el = document.getElementById('hist-list');
+      if (!state.historico.length) {
+        el.innerHTML = `<p style="color:var(--text3);font-size:13px;text-align:center;padding:16px 0;">Nenhuma atividade ainda.</p>`;
+        return;
+      }
+      el.innerHTML = state.historico.map(h => {
+        const scoreHtml = h.score != null
+          ? `<div class="task-score ${scoreClass(h.score)}">${h.score}%</div>`
+          : `<div class="badge badge-${h.status === 'success' ? 'green' : h.status === 'skipped' ? 'gray' : 'red'}">${h.status === 'success' ? 'OK' : h.status === 'skipped' ? 'Skip' : 'Erro'}</div>`;
+        return `
+          <div class="hist-item">
+            <div>
+              <div class="hist-title">${h.title || 'Atividade'}</div>
+              <div class="hist-meta">${h.type || ''} · ${formatDate(h.timestamp)}</div>
+            </div>
+            ${scoreHtml}
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ── Estatísticas ───────────────────────────────────────────────────────────
+
+    function updateStats(feitas, falhas, notas) {
+      state.stats.feitas += feitas;
+      state.stats.falhas += falhas;
+      if (notas.length) state.stats.notas.push(...notas);
+
+      const media = state.stats.notas.length
+        ? Math.round(state.stats.notas.reduce((a,b) => a+b, 0) / state.stats.notas.length)
+        : null;
+
+      document.getElementById('stat-feitas').textContent = state.stats.feitas;
+      document.getElementById('stat-falhas').textContent = state.stats.falhas;
+      document.getElementById('stat-nota').textContent = media != null ? media + '%' : '—';
+      document.getElementById('stats-card').style.display = 'block';
+    }
+
+    // ── Renderizar lista de tarefas ────────────────────────────────────────────
+
+    function renderTaskList(tasks, containerEl) {
+      if (!tasks.length) {
+        containerEl.innerHTML = `<div class="alert alert-info">ℹ️ Nenhuma tarefa encontrada para este filtro.</div>`;
+        return;
+      }
+      containerEl.innerHTML = `
+        <div style="font-size:12px;color:var(--text3);margin-bottom:8px;">${tasks.length} tarefa(s) encontrada(s)</div>
+        <div class="task-list" id="task-list-items"></div>
+      `;
+      const list = document.getElementById('task-list-items');
+      tasks.forEach(t => {
+        const item = document.createElement('div');
+        item.className = 'task-item';
+        item.dataset.id = t.id;
+        const typeLabel = t.isEssay ? '✍️ Redação' : t.isExam ? '📋 Prova' : '📝 Tarefa';
+        const expHtml = t.expiredAt ? `· vence ${formatDate(t.expiredAt)}` : '';
+        item.innerHTML = `
+          <div class="task-item-left">
+            <div class="task-title">${t.title}</div>
+            <div class="task-meta">${typeLabel} ${t.subject ? '· ' + t.subject : ''} ${expHtml}</div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="fazerUmaTarefa(${t.id}, this)">Fazer</button>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    // ── Fazer uma única tarefa ─────────────────────────────────────────────────
+
+    window.fazerUmaTarefa = async function(taskId, btnEl) {
+      const task = state.tasks.find(t => t.id === taskId);
+      if (!task) return;
+
+      setLoading(btnEl, true, '...');
+      try {
+        let result;
+        if (task.isEssay) {
+          result = await api('/api/redacao', {
+            authToken: state.authToken,
+            roomName: state.turmaAtual.name,
+            lessonId: taskId,
+            answerId: task.answerId,
+          });
+        } else {
+          result = await api('/api/completar', {
+            authToken: state.authToken,
+            roomName: state.turmaAtual.name,
+            lessonId: taskId,
+            answerId: task.answerId,
+            targetScore: task.targetScore,
+            useAI: true,
+          });
+        }
+
+        const item = document.querySelector(`.task-item[data-id="${taskId}"]`);
+        if (item) {
+          if (result.status === 'success') {
+            item.classList.add('done');
+            const scoreHtml = result.score != null
+              ? `<div class="task-score ${scoreClass(result.score)}">${result.score}%</div>`
+              : `<span class="badge badge-green">✅ OK</span>`;
+            item.querySelector('button').replaceWith(Object.assign(document.createElement('div'), { innerHTML: scoreHtml }));
+          } else if (result.status === 'skipped') {
+            item.classList.add('skipped');
+            item.querySelector('button').replaceWith(Object.assign(document.createElement('span'), {
+              className: 'badge badge-gray', textContent: '⏩ Skip'
+            }));
+          }
+        }
+
+        addHistorico({ title: task.title, type: task.isEssay ? 'Redação' : 'Tarefa', status: result.status, score: result.score });
+        updateStats(result.status === 'success' ? 1 : 0, result.status === 'error' ? 1 : 0, result.score != null ? [result.score] : []);
+
+      } catch (err) {
+        const item = document.querySelector(`.task-item[data-id="${taskId}"]`);
+        if (item) {
+          item.classList.add('failed');
+          item.querySelector('button').textContent = '❌';
+        }
+        addHistorico({ title: task.title, type: 'Tarefa', status: 'error', score: null });
+        updateStats(0, 1, []);
+      }
+    };
+
+    // ── Fazer todas as tarefas ─────────────────────────────────────────────────
+
+    async function fazerTodasTarefas(tasks) {
+      if (!tasks.length) return;
+
+      showProgress(tasks.length);
+      let feitas = 0, falhas = 0;
+      const notas = [];
+
+      for (let i = 0; i < tasks.length; i++) {
+        const task = tasks[i];
+        updateProgress(i, tasks.length, task.title);
+
+        try {
+          let result;
+          if (task.isEssay) {
+            result = await api('/api/redacao', {
+              authToken: state.authToken,
+              roomName: state.turmaAtual.name,
+              lessonId: task.id,
+              answerId: task.answerId,
+            });
+          } else {
+            result = await api('/api/completar', {
+              authToken: state.authToken,
+              roomName: state.turmaAtual.name,
+              lessonId: task.id,
+              answerId: task.answerId,
+              targetScore: task.targetScore,
+              useAI: true,
+            });
+          }
+
+          if (result.status === 'success') {
+            feitas++;
+            const scoreStr = result.score != null ? ` · ${result.score}%` : '';
+            logProgress(`${task.title}${scoreStr}`, 'ok');
+            if (result.score != null) notas.push(result.score);
+            addHistorico({ title: task.title, type: task.isEssay ? 'Redação' : 'Tarefa', status: 'success', score: result.score });
+          } else if (result.status === 'skipped') {
+            logProgress(`${task.title} (pulado: ${result.reason})`, 'skip');
+            addHistorico({ title: task.title, type: 'Skip', status: 'skipped', score: null });
+          }
+
+          // Atualizar item na lista
+          const item = document.querySelector(`.task-item[data-id="${task.id}"]`);
+          if (item) {
+            item.classList.add(result.status === 'success' ? 'done' : 'skipped');
+            const btn = item.querySelector('button');
+            if (btn) btn.textContent = result.status === 'success' ? (result.score != null ? result.score + '%' : '✅') : '⏩';
+          }
+
+        } catch (err) {
+          falhas++;
+          logProgress(`${task.title}: ${err.message}`, 'err');
+          addHistorico({ title: task.title, type: 'Tarefa', status: 'error', score: null });
+          const item = document.querySelector(`.task-item[data-id="${task.id}"]`);
+          if (item) { item.classList.add('failed'); const btn = item.querySelector('button'); if (btn) btn.textContent = '❌'; }
+        }
+
+        updateProgress(i + 1, tasks.length);
+
+        // Pequeno delay entre tarefas para parecer humano
+        if (i < tasks.length - 1) await new Promise(r => setTimeout(r, 800 + Math.random() * 1200));
+      }
+
+      logProgress(`Concluído: ${feitas} feitas, ${falhas} falhas.`, feitas > 0 ? 'ok' : 'err');
+      updateStats(feitas, falhas, notas);
+      setTimeout(hideProgress, 3000);
+    }
+
+    // ── LOGIN ──────────────────────────────────────────────────────────────────
+
+    document.getElementById('btn-login').addEventListener('click', async () => {
+      const ra = document.getElementById('inp-ra').value.trim();
+      const digito = document.getElementById('inp-digito').value.trim();
+      const senha = document.getElementById('inp-senha').value;
+
+      clearAlert('login-error');
+      if (!ra || !digito || !senha) {
+        showAlert('login-error', 'error', 'Preencha todos os campos.');
+        return;
+      }
+
+      const btn = document.getElementById('btn-login');
+      setLoading(btn, true, 'Entrando...');
+
+      try {
+        const data = await api('/api/login', { ra, digito, senha });
+        state.authToken = data.authToken;
+        state.turmas = data.turmas;
+        state.aluno = data.aluno;
+
+        if (data.turmas.length === 1) {
+          // Uma só turma: ir direto pro dashboard
+          state.turmaAtual = data.turmas[0];
+          entrarDashboard();
+        } else {
+          // Múltiplas turmas: mostrar seletor
+          const sel = document.getElementById('sel-turma');
+          sel.innerHTML = data.turmas.map(t =>
+            `<option value="${t.id}">${t.topic || t.name} ${t.escola ? '· ' + t.escola : ''}</option>`
+          ).join('');
+          // Pré-selecionar a default
+          if (data.defaultTurmaId) sel.value = data.defaultTurmaId;
+          show('sec-turma');
+        }
+      } catch (err) {
+        showAlert('login-error', 'error', err.message);
+      } finally {
+        setLoading(btn, false);
+      }
+    });
+
+    // Enter nos campos de login
+    ['inp-ra', 'inp-digito', 'inp-senha'].forEach(id => {
+      document.getElementById(id).addEventListener('keydown', e => {
+        if (e.key === 'Enter') document.getElementById('btn-login').click();
+      });
+    });
+
+    // ── CONFIRMAR TURMA ───────────────────────────────────────────────────────
+
+    document.getElementById('btn-confirmar-turma').addEventListener('click', () => {
+      const sel = document.getElementById('sel-turma');
+      const turmaId = parseInt(sel.value);
+      state.turmaAtual = state.turmas.find(t => t.id === turmaId) || state.turmas[0];
+      entrarDashboard();
+    });
+
+    function entrarDashboard() {
+      document.getElementById('dash-nome').textContent = state.aluno?.nome || 'Aluno';
+      document.getElementById('dash-turma').textContent =
+        (state.turmaAtual?.topic || state.turmaAtual?.name || '') +
+        (state.turmaAtual?.escola ? ' · ' + state.turmaAtual.escola : '');
+      show('sec-dash');
+    }
+
+    // ── LOGOUT ────────────────────────────────────────────────────────────────
+
+    document.getElementById('btn-logout').addEventListener('click', () => {
+      state.authToken = null;
+      state.turmas = [];
+      state.turmaAtual = null;
+      state.aluno = null;
+      state.tasks = [];
+      state.stats = { feitas: 0, falhas: 0, notas: [] };
+      state.historico = [];
+      document.getElementById('tarefas-result').innerHTML = '';
+      document.getElementById('redacao-result').innerHTML = '';
+      document.getElementById('stats-card').style.display = 'none';
+      document.getElementById('btn-fazer-tudo').disabled = true;
+      show('sec-login');
+    });
+
+    // ── CHIPS de tipo ─────────────────────────────────────────────────────────
+
+    document.querySelectorAll('.chip[data-tipo]').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.chip[data-tipo]').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        state.tipoSelecionado = chip.dataset.tipo;
+      });
+    });
+
+    // ── BUSCAR TAREFAS ────────────────────────────────────────────────────────
+
+    document.getElementById('btn-buscar').addEventListener('click', async () => {
+      const btn = document.getElementById('btn-buscar');
+      const container = document.getElementById('tarefas-result');
+      setLoading(btn, true, 'Buscando...');
+      container.innerHTML = '';
+
+      try {
+        const data = await api('/api/tarefas', {
+          authToken: state.authToken,
+          roomId: state.turmaAtual.id,
+          roomName: state.turmaAtual.name,
+          tipo: state.tipoSelecionado,
+        });
+
+        state.tasks = data.tasks;
+        renderTaskList(data.tasks, container);
+
+        const fazerBtn = document.getElementById('btn-fazer-tudo');
+        fazerBtn.disabled = !data.tasks.length;
+
+      } catch (err) {
+        container.innerHTML = `<div class="alert alert-error">❌ ${err.message}</div>`;
+      } finally {
+        setLoading(btn, false);
+      }
+    });
+
+    // ── FAZER TUDO (lista atual) ───────────────────────────────────────────────
+
+    document.getElementById('btn-fazer-tudo').addEventListener('click', async () => {
+      if (!state.tasks.length) return;
+      await fazerTodasTarefas(state.tasks);
+    });
+
+    // ── MODO TOTAL ────────────────────────────────────────────────────────────
+
+    document.getElementById('btn-modo-total').addEventListener('click', async () => {
+      const btn = document.getElementById('btn-modo-total');
+      setLoading(btn, true, 'Buscando tudo...');
+
+      try {
+        // Buscar todas as tarefas (pendentes + expiradas)
+        const data = await api('/api/tarefas', {
+          authToken: state.authToken,
+          roomId: state.turmaAtual.id,
+          roomName: state.turmaAtual.name,
+          tipo: 'todas',
+        });
+
+        state.tasks = data.tasks;
+
+        // Renderizar na lista
+        const container = document.getElementById('tarefas-result');
+        renderTaskList(data.tasks, container);
+
+        setLoading(btn, false);
+
+        if (!data.tasks.length) {
+          document.getElementById('tarefas-result').innerHTML =
+            `<div class="alert alert-success">✅ Nenhuma tarefa pendente! Tudo em dia.</div>`;
+          return;
+        }
+
+        // Executar
+        await fazerTodasTarefas(data.tasks);
+
+      } catch (err) {
+        document.getElementById('tarefas-result').innerHTML =
+          `<div class="alert alert-error">❌ ${err.message}</div>`;
+        setLoading(btn, false);
+      }
+    });
+
+    // ── REDAÇÃO MANUAL ────────────────────────────────────────────────────────
+
+    document.getElementById('btn-redacao').addEventListener('click', async () => {
+      const btn = document.getElementById('btn-redacao');
+      const container = document.getElementById('redacao-result');
+      const lessonId = document.getElementById('inp-redacao-id').value.trim();
+
+      if (!lessonId) {
+        container.innerHTML = `<div class="alert alert-error">❌ Informe o ID da tarefa de redação.</div>`;
+        return;
+      }
+
+      setLoading(btn, true, 'Gerando redação...');
+      container.innerHTML = '';
+
+      try {
+        const result = await api('/api/redacao', {
+          authToken: state.authToken,
+          roomName: state.turmaAtual.name,
+          lessonId: parseInt(lessonId),
+        });
+
+        container.innerHTML = `
+          <div class="alert alert-success" style="margin-top:10px;">✅ Redação enviada com sucesso!</div>
+          <div style="font-size:12px;color:var(--text3);margin:8px 0 4px;">Texto gerado:</div>
+          <div class="essay-preview">${result.texto || ''}</div>
+        `;
+        addHistorico({ title: 'Redação #' + lessonId, type: 'Redação', status: 'success', score: null });
+        updateStats(1, 0, []);
+
+      } catch (err) {
+        container.innerHTML = `<div class="alert alert-error" style="margin-top:10px;">❌ ${err.message}</div>`;
+      } finally {
+        setLoading(btn, false);
+      }
+    });
+
+    // ── TABS ──────────────────────────────────────────────────────────────────
+
+    document.querySelectorAll('.tab[data-tab]').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('tab-automacao').style.display =
+          tab.dataset.tab === 'automacao' ? 'block' : 'none';
+        document.getElementById('tab-historico').style.display =
+          tab.dataset.tab === 'historico' ? 'block' : 'none';
+      });
+    });
+  </script>
+</body>
+</html>
